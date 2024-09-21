@@ -43,11 +43,16 @@ fi
 if [[ $1 == "delete" ]]; then
 	echo "Enter the name of entry which should be deleted (located in database folder)."
 	read -r -p "Name: " name
+	if [ -z "$name" ]; then
+		echo "No name specified!"
+		exit 1
+	fi
 	if ! ls "$DATABASE/$name" > /dev/null; then
 		exit 1
 	else
 		read -r -p "Are you sure that you want to delete this entry? This cannot be undone! (Y/N) " answer
 		if [[ $answer == Y ]] || [[ $answer == y ]]; then
+			# shellcheck disable=2115
 			rm -rf "$DATABASE/$name"
 			echo "Deleted!"
 		fi
