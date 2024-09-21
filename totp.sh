@@ -5,6 +5,7 @@ DATABASE="./database"
 if [ -z "$1" ]; then
 	echo "Usage: ./totp.sh add"
 	echo "       ./totp.sh open"
+	echo "       ./totp.sh delete"
 	exit 1
 fi
 
@@ -38,5 +39,21 @@ if [[ $1 == "open" ]]; then
 		exit 0
 	fi
 fi
+
+if [[ $1 == "delete" ]]; then
+	echo "Enter the name of entry which should be deleted (located in database folder)."
+	read -r -p "Name: " name
+	if ! ls "$DATABASE/$name" > /dev/null; then
+		exit 1
+	else
+		read -r -p "Are you sure that you want to delete this entry? This cannot be undone! (Y/N) " answer
+		if [[ $answer == Y ]] || [[ $answer == y ]]; then
+			rm -rf "$DATABASE/$name"
+			echo "Deleted!"
+		fi
+	fi
+exit 0
+fi
+
 
 echo "I don't know what do you mean by $1"

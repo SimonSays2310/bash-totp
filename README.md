@@ -14,4 +14,4 @@ I wrote this script out of pure boredom (I use KeePassXC for managing TOTP), how
 
 `./totp.sh open` - opens a saved entry.
 
-To delete an entry, simply `cd` to database folder and `rm -rf` the folder with TOTP file that you no longer need.
+`./totp.sh delete` - permanently deletes an entry from database folder.
