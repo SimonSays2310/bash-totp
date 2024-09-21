@@ -25,8 +25,10 @@ if [[ $1 == "add" ]]; then
 	echo
 	read -s -r -p "Retype password: " password2
 	echo
+	# shellcheck disable=2053
 	if ! [[ $password == $password2 ]]; then
 		echo "Passwords mismatch, please try again!"
+		# shellcheck disable=2115
 		rm -rf "$DATABASE/$name/"
 		exit 1
 	fi
