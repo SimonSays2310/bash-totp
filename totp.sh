@@ -11,6 +11,10 @@ fi
 
 if [[ $1 == "add" ]]; then
 	read -r -p 'Enter the name of your new entry (typically this should be a name of service where do you want to enable 2FA, for example "Email", "Git server" etc): ' name
+	if [ -z "$name" ]; then
+		echo "No name specified!"
+		exit 1
+	fi
 	if ! mkdir "$DATABASE/$name"; then
 		exit 1
 	fi
@@ -18,8 +22,15 @@ if [[ $1 == "add" ]]; then
 	echo "Now enter a password which will be used for encrypting the secret."
 	echo "IT IS NOT RECOVERABLE, IF YOU LOSE IT - YOU WILL HAVE TO RE-ENABLE 2FA BY USING RECOVERY CODES!"
 	read -s -r -p "Password (not visible in terminal): " password
-	echo "$secret" | openssl aes-256-cbc -pbkdf2 -k "$password" -out "$DATABASE/$name/totp"
 	echo
+	read -s -r -p "Retype password: " password2
+	echo
+	if ! [[ $password == $password2 ]]; then
+		echo "Passwords mismatch, please try again!"
+		rm -rf "$DATABASE/$name/"
+		exit 1
+	fi
+	echo "$secret" | openssl aes-256-cbc -pbkdf2 -k "$password" -out "$DATABASE/$name/totp"
 	echo "Added!"
 	echo "Now try using ./totp.sh open"
 	exit 0
