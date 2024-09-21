@@ -10,7 +10,9 @@ fi
 
 if [[ $1 == "add" ]]; then
 	read -r -p "What's the name of your service? " name
-	mkdir "$DATABASE/$name"
+	if ! mkdir "$DATABASE/$name"; then
+		exit 1
+	fi
 	read -s -r -p "Enter your TOTP secret (not visible in terminal): " secret
 	echo "Now enter a password which will be used for encrypting the secret."
 	echo "IT IS NOT RECOVERABLE, IF YOU LOSE IT - YOU WILL HAVE TO RE-ENABLE 2FA BY USING RECOVERY CODES!"
@@ -26,7 +28,6 @@ if [[ $1 == "open" ]]; then
 	echo "Enter the name of your service (located in database folder)."
 	read -r -p "Name: " name
 	if ! cd "$DATABASE/$name"; then
-		echo "No such entry in database!"
 		exit 1
 	else
 		cd - > /dev/null
