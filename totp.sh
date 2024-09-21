@@ -10,7 +10,7 @@ if [ -z "$1" ]; then
 fi
 
 if [[ $1 == "add" ]]; then
-	read -r -p "What's the name of your service? " name
+	read -r -p 'Enter the name of your new entry (typically this should be a name of service where do you want to enable 2FA, for example "Email", "Git server" etc): ' name
 	if ! mkdir "$DATABASE/$name"; then
 		exit 1
 	fi
@@ -26,8 +26,7 @@ if [[ $1 == "add" ]]; then
 fi
 
 if [[ $1 == "open" ]]; then
-	echo "Enter the name of your service (located in database folder)."
-	read -r -p "Name: " name
+	read -r -p "Enter the name of your entry (located in database folder): " name
 	if ! cd "$DATABASE/$name"; then
 		exit 1
 	else
@@ -41,8 +40,7 @@ if [[ $1 == "open" ]]; then
 fi
 
 if [[ $1 == "delete" ]]; then
-	echo "Enter the name of entry which should be deleted (located in database folder)."
-	read -r -p "Name: " name
+	read -r -p "Enter the name of entry which should be deleted (located in database folder): " name
 	if [ -z "$name" ]; then
 		echo "No name specified!"
 		exit 1
