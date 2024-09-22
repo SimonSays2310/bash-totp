@@ -40,6 +40,10 @@ fi
 
 if [[ $1 == "open" ]]; then
 	read -r -p "Enter the name of your entry (located in database folder): " name
+	if [ -z $name ]; then
+		echo "No name specified!"
+		exit 1
+	fi
 	if ! cd "$DATABASE/$name"; then
 		exit 1
 	else
@@ -73,3 +77,4 @@ fi
 
 
 echo "I don't know what do you mean by $1"
+exit 1
