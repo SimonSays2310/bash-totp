@@ -8,6 +8,8 @@ I wrote this script out of pure boredom (I use KeePassXC for managing TOTP), how
 
 `oathtool` and `openssl` (usually already bundled in lots of Linux distros, try running `openssl` in your terminal). That's all.
 
+If you are using the code from `gpg` branch, then you need `gnupg` instead of `openssl` (obviously).
+
 ## Usage
 
 `./totp.sh add` - adds an entry in database folder and encrypts it with a password.
