@@ -2,6 +2,11 @@
 # shellcheck disable=2164
 DATABASE="./database"
 
+if [ -z $DATABASE ]; then
+	echo "FATAL: Missing DATABASE variable!"
+	exit 1
+fi
+
 if [ -z "$1" ]; then
 	echo "Usage: ./totp.sh add"
 	echo "       ./totp.sh open"
