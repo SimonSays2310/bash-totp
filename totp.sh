@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 # shellcheck disable=2164
 DATABASE="./database"
+KEYID=""
+SYMMETRIC=0
 
 if [ -z $DATABASE ]; then
 	echo "FATAL: Missing DATABASE variable!"
+	exit 1
+fi
+
+if [ -z $KEYID ] && [[ $SYMMETRIC -eq 0 ]]; then
+	echo "FATAL: Missing KEYID variable!"
+	echo "If you want to use symmetric encryption, please set SYMMETRIC variable to 1 or use OpenSSL version (not recommended)."
 	exit 1
 fi
 
@@ -24,20 +32,11 @@ if [[ $1 == "add" ]]; then
 		exit 1
 	fi
 	read -s -r -p "Enter your TOTP secret (not visible in terminal): " secret
-	echo "Now enter a password which will be used for encrypting the secret."
-	echo "IT IS NOT RECOVERABLE, IF YOU LOSE IT - YOU WILL HAVE TO RE-ENABLE 2FA BY USING RECOVERY CODES!"
-	read -s -r -p "Password (not visible in terminal): " password
-	echo
-	read -s -r -p "Retype password: " password2
-	echo
-	# shellcheck disable=2053
-	if ! [[ $password == $password2 ]]; then
-		echo "Passwords mismatch, please try again!"
-		# shellcheck disable=2115
-		rm -rf "$DATABASE/$name/"
-		exit 1
+	if [[ $SYMMETRIC -eq 1 ]]; then
+		echo "$secret" | gpg -a -c --pinentry-mode loopback --output "$DATABASE/$name/totp"
+	else
+		echo "$secret" | gpg -e -a -r "$KEYID" --output "$DATABASE/$name/totp" --pinentry-mode loopback
 	fi
-	echo "$secret" | openssl aes-256-cbc -pbkdf2 -k "$password" -out "$DATABASE/$name/totp"
 	echo "Added!"
 	echo "Now try using ./totp.sh open"
 	exit 0
@@ -53,8 +52,7 @@ if [[ $1 == "open" ]]; then
 		exit 1
 	else
 		cd - > /dev/null
-		read -s -r -p "Password (not visible in terminal): " password
-		secret=$(openssl aes-256-cbc -d -pbkdf2 -k "$password" -in "$DATABASE/$name/totp")
+		secret=$(gpg --pinentry-mode loopback -d "$DATABASE/$name/totp")
 		echo
 		oathtool -b --totp "$secret"
 		exit 0
