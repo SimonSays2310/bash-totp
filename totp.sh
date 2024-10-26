@@ -52,9 +52,8 @@ if [[ $1 == "open" ]]; then
 		exit 1
 	else
 		cd - > /dev/null
-		secret=$(gpg --pinentry-mode loopback -d "$DATABASE/$name/totp")
 		echo
-		oathtool -b --totp "$secret"
+		oathtool -b --totp $(gpg --pinentry-mode loopback -d "$DATABASE/$name/totp")
 		exit 0
 	fi
 fi
