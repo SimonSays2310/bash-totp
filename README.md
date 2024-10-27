@@ -10,7 +10,7 @@ I wrote this script out of pure boredom (I use KeePassXC for managing TOTP), how
 
 ## Usage
 
-`./totp.sh add` - adds an entry in database folder and encrypts it with a password.
+`./totp.sh add` - adds an entry in database folder and encrypts it with your GPG key/passphrase (if `SYMMETRIC` variable is set to 1).
 
 `./totp.sh open` - opens a saved entry.
 
